@@ -1,0 +1,451 @@
+{
+  "entities": {
+    "ContactMessage": {
+      "title": "Contact Message",
+      "description": "Messages sent via the contact form",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "course": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "phone",
+        "course",
+        "message",
+        "createdAt"
+      ]
+    },
+    "NewsEvent": {
+      "title": "News & Event",
+      "description": "News and events items displayed on the public page",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "title_en": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "description_en": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "date": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "imageUrl": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "title_en",
+        "description",
+        "description_en",
+        "date",
+        "createdAt"
+      ]
+    },
+    "PromoContent": {
+      "title": "Promo Content",
+      "description": "Promotional banner content",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "title_en": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "text_en": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "image": {
+          "type": "string",
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "title",
+        "title_en",
+        "text",
+        "text_en"
+      ]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "Course information",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "title_en": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "description_en": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "duration": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "duration_en": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "icon": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "title_en",
+        "description",
+        "description_en",
+        "duration",
+        "duration_en",
+        "icon",
+        "createdAt"
+      ]
+    },
+    "Feature": {
+      "title": "Feature",
+      "description": "Feature/Service information",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "title_en": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "description_en": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "icon": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "title_en",
+        "description",
+        "description_en",
+        "icon",
+        "createdAt"
+      ]
+    },
+    "GalleryImage": {
+      "title": "Gallery Image",
+      "description": "Image in the gallery",
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "createdAt"
+      ]
+    },
+    "FAQ": {
+      "title": "FAQ",
+      "description": "Frequently Asked Questions",
+      "type": "object",
+      "properties": {
+        "question": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "question_en": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "answer": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "answer_en": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "question",
+        "question_en",
+        "answer",
+        "answer_en",
+        "createdAt"
+      ]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Admin users",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      }
+    },
+    "Registration": {
+      "title": "Registration",
+      "description": "Course registrations from students",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "course": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "phone",
+        "course",
+        "status",
+        "createdAt"
+      ]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Student testimonials",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "name_en": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "role": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "role_en": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "text_en": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "image": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "rating": {
+          "type": "number"
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "role",
+        "text",
+        "createdAt"
+      ]
+    },
+    "Blog": {
+      "title": "Blog",
+      "description": "IT Knowledge Blog posts",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "title_en": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "category_en": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "excerpt": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "excerpt_en": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "image": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "date": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "category",
+        "excerpt",
+        "image",
+        "date",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "contact_messages": {
+      "schema": "ContactMessage",
+      "description": "Stores contact messages from users."
+    },
+    "news_events": {
+      "schema": "NewsEvent",
+      "description": "Stores news and events."
+    },
+    "promo_content": {
+      "schema": "PromoContent",
+      "description": "Stores the promo popup content. Document ID is 'current'."
+    },
+    "courses": {
+      "schema": "Course",
+      "description": "Stores the courses offered."
+    },
+    "features": {
+      "schema": "Feature",
+      "description": "Stores the features/services offered."
+    },
+    "gallery": {
+      "schema": "GalleryImage",
+      "description": "Stores gallery images."
+    },
+    "faqs": {
+      "schema": "FAQ",
+      "description": "Stores frequently asked questions."
+    },
+    "admins": {
+      "schema": "Admin",
+      "description": "Stores admin emails. Document ID is the user's UID."
+    },
+    "registrations": {
+      "schema": "Registration",
+      "description": "Stores course registrations."
+    },
+    "testimonials": {
+      "schema": "Testimonial",
+      "description": "Stores student testimonials."
+    },
+    "blogs": {
+      "schema": "Blog",
+      "description": "Stores IT knowledge blog posts."
+    }
+  }
+}

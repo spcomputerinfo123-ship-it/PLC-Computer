@@ -1,0 +1,8 @@
+{
+  "name": "PLC Computer",
+  "description": "មជ្ឈមណ្ឌលបណ្តុះបណ្តាលជំនាញកុំព្យូទ័រ",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
