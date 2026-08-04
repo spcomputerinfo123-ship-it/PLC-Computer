@@ -186,10 +186,10 @@ export default function LoginModal({ isOpen, type, onClose, onSuccess, onLogin, 
                     </motion.div>
                   )}
                   <div>
-                    <label className="block text-[15px] font-bold text-slate-700 mb-2 ">{lang === 'km' ? 'អ៊ីមែល' : 'Email'}</label>
+                    <label className="block text-[15px] font-bold text-slate-700 mb-2 ">{lang === 'km' ? (type === 'admin' ? 'ឈ្មោះគណនី ឬ អ៊ីមែល' : 'អ៊ីមែល') : (type === 'admin' ? 'Username or Email' : 'Email')}</label>
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                      <input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" className="w-full pl-12 pr-4 py-3.5 bg-slate-50/50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium text-slate-900 placeholder:text-slate-400 text-[15px]" placeholder="name@example.com" />
+                      {type === 'admin' ? <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" /> : <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />}
+                      <input type={type === 'admin' ? "text" : "email"} value={email} onChange={e => setEmail(e.target.value)} required autoComplete={type === 'admin' ? "username" : "email"} className="w-full pl-12 pr-4 py-3.5 bg-slate-50/50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium text-slate-900 placeholder:text-slate-400 text-[15px]" placeholder={type === 'admin' ? (lang === 'km' ? 'ឈ្មោះគណនី ឬ អ៊ីមែល' : 'Username or Email') : "name@example.com"} />
                     </div>
                   </div>
                   

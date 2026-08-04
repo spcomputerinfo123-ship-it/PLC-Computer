@@ -177,10 +177,13 @@ export function useAuth() {
   const loginWithEmail = async (email: string, password: string, expectedRole?: 'admin' | 'student') => {
     const inputRaw = email.trim();
     let cleanEmail = inputRaw.toLowerCase();
+    let inputWithDomain = inputRaw;
     if (cleanEmail && !cleanEmail.includes('@')) {
       cleanEmail += '@plc.edu.kh';
+      inputWithDomain += '@plc.edu.kh';
     } else if (cleanEmail && !cleanEmail.includes('.')) {
       cleanEmail += '.com';
+      inputWithDomain += '.com';
     }
 
     let userDocData: any = null;
@@ -188,30 +191,41 @@ export function useAuth() {
 
     try {
       const usersRef = collection(db, 'users');
-      const q1 = query(usersRef, where('email', '==', cleanEmail));
-      const s1 = await getDocs(q1);
-      if (!s1.empty) {
-        userDocId = s1.docs[0].id;
-        userDocData = s1.docs[0].data();
+      // 1. Try exact match first for exact case sensitivity
+      const qExact = query(usersRef, where('email', '==', inputRaw));
+      const sExact = await getDocs(qExact);
+      if (!sExact.empty) {
+        userDocId = sExact.docs[0].id;
+        userDocData = sExact.docs[0].data();
       } else {
-        const q2 = query(usersRef, where('email', '==', inputRaw.toLowerCase()));
-        const s2 = await getDocs(q2);
-        if (!s2.empty) {
-          userDocId = s2.docs[0].id;
-          userDocData = s2.docs[0].data();
+        const q1 = query(usersRef, where('email', '==', cleanEmail));
+        const s1 = await getDocs(q1);
+        if (!s1.empty) {
+          userDocId = s1.docs[0].id;
+          userDocData = s1.docs[0].data();
         } else {
-          const sAll = await getDocs(usersRef);
-          const foundDoc = sAll.docs.find(d => {
-            const data = d.data();
-            const e = (data.email || '').toLowerCase();
-            const u = (data.username || '').toLowerCase();
-            const n = (data.name || '').toLowerCase();
-            const target = inputRaw.toLowerCase();
-            return e === target || e === cleanEmail || u === target || n === target;
-          });
-          if (foundDoc) {
-            userDocId = foundDoc.id;
-            userDocData = foundDoc.data();
+          const q2 = query(usersRef, where('email', '==', inputRaw.toLowerCase()));
+          const s2 = await getDocs(q2);
+          if (!s2.empty) {
+            userDocId = s2.docs[0].id;
+            userDocData = s2.docs[0].data();
+          } else {
+            const sAll = await getDocs(usersRef);
+            const foundDoc = sAll.docs.find(d => {
+              const data = d.data();
+              const e = data.email || '';
+              const u = data.username || '';
+              const n = data.name || '';
+              // Strict case check first, then fallback to lowercase
+              return e === inputRaw || u === inputRaw || n === inputRaw ||
+                     e.toLowerCase() === cleanEmail || e.toLowerCase() === inputRaw.toLowerCase() ||
+                     u.toLowerCase() === cleanEmail || u.toLowerCase() === inputRaw.toLowerCase() ||
+                     n.toLowerCase() === cleanEmail || n.toLowerCase() === inputRaw.toLowerCase();
+            });
+            if (foundDoc) {
+              userDocId = foundDoc.id;
+              userDocData = foundDoc.data();
+            }
           }
         }
       }
@@ -219,11 +233,10 @@ export function useAuth() {
       console.error("Error querying users collection during login:", e);
     }
 
-    const isSuperAdminEmail = ['spcomputerinfo123@gmail.com', 'plccomputerinfo123@gmail.com'].includes(cleanEmail) || 
-                              ['spcomputerinfo123@gmail.com', 'plccomputerinfo123@gmail.com'].includes(inputRaw.toLowerCase()) || 
-                              inputRaw.toLowerCase() === 'admin' || inputRaw.toLowerCase() === 'admin@123';
+    const isSuperAdmin = ['spcomputerinfo123@gmail.com', 'plccomputerinfo123@gmail.com'].includes(inputRaw) || 
+                         inputRaw === 'admin' || inputRaw === 'admin@123';
 
-    if (!userDocData && isSuperAdminEmail) {
+    if (!userDocData && isSuperAdmin) {
       userDocData = {
         name: 'System Admin',
         email: cleanEmail.includes('@') ? cleanEmail : 'spcomputerinfo123@gmail.com',
@@ -238,6 +251,36 @@ export function useAuth() {
         throw new Error('SUSPENDED');
       }
 
+      if (expectedRole === 'admin') {
+        if (userDocId.startsWith('admin-fallback-')) {
+          if (!isSuperAdmin) {
+            throw new Error('INVALID_CREDENTIALS');
+          }
+        } else {
+          const e = userDocData.email || '';
+          const u = userDocData.username || '';
+          const n = userDocData.name || '';
+          
+          let isValid = false;
+          if (inputRaw === e || inputRaw === u || inputRaw === n) {
+            isValid = true;
+          } else if (inputRaw.includes('@') && inputWithDomain === e) {
+            isValid = true;
+          } else if (!inputRaw.includes('@') && inputWithDomain === e) {
+            // They used a shortcut (e.g. typed "admin" and it became "admin@plc.edu.kh").
+            // Only allow this if they don't have a username, OR if their typed input exactly matches their username/name.
+            // If they have a username "Admin" and they typed "admin", we should reject it to enforce case sensitivity on the username.
+            if (!u || inputRaw === u) {
+              isValid = true;
+            }
+          }
+
+          if (!isValid) {
+            throw new Error('INVALID_CREDENTIALS');
+          }
+        }
+      }
+
       // Check if Admin defined a password for this user
       if (userDocData.password !== undefined && userDocData.password !== null && userDocData.password !== '') {
         if (userDocData.password !== password) {
@@ -245,7 +288,7 @@ export function useAuth() {
         }
 
         let assignedRole: Role = userDocData.role || 'pending';
-        if (isSuperAdminEmail || ['spcomputerinfo123@gmail.com', 'plccomputerinfo123@gmail.com'].includes(userDocData.email)) {
+        if (isSuperAdmin || ['spcomputerinfo123@gmail.com', 'plccomputerinfo123@gmail.com'].includes(userDocData.email)) {
           assignedRole = 'admin';
         }
 
@@ -270,6 +313,25 @@ export function useAuth() {
 
     try {
       const result = await signInWithEmailAndPassword(auth, cleanEmail, password);
+      
+      if (expectedRole === 'admin' && !isSuperAdmin) {
+        const authEmail = result.user.email || '';
+        if (!userDocData) {
+          let isValid = false;
+          if (inputRaw === authEmail) {
+            isValid = true;
+          } else if (inputRaw.includes('@') && inputWithDomain === authEmail) {
+            isValid = true;
+          } else if (!inputRaw.includes('@') && inputWithDomain === authEmail) {
+             isValid = true;
+          }
+          if (!isValid) {
+            await signOut(auth);
+            throw new Error('INVALID_CREDENTIALS');
+          }
+        }
+      }
+
       const isAdmin = await checkIsAdmin(result.user);
       if (expectedRole === 'admin' && !isAdmin) {
         await signOut(auth);

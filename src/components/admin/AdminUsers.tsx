@@ -131,7 +131,7 @@ export default function AdminUsers() {
       const userRecordToSave: any = {
         name: newUser.name || rawInput,
         email: cleanEmail,
-        username: rawInput.toLowerCase(),
+        username: rawInput,
         role: newUser.role,
         status: newUser.status || 'active',
         createdAt: new Date().toISOString(),
